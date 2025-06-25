@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include "Phylactery.hpp"
+#include "SpiritPanel.hpp" // Include the new SpiritPanel system
 
 enum class GameState {
     MAIN_MENU,
@@ -26,6 +27,7 @@ private:
     sf::Sprite menuBackground;
 
     Phylactery* phylactery;
+    SpiritPanel* spiritPanel;
 
     GameState state;
     bool paused;
@@ -38,6 +40,8 @@ private:
     int selectedMenuOption;
     int selectedPauseOption;
     int selectedQuitOption;
+
+    sf::Clock soulClock;
 
     void processEvents();
     void update();

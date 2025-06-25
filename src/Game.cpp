@@ -4,8 +4,9 @@
 Game::Game()
     : window(sf::VideoMode(800, 600), "The Curse of Kursore"),
       font(), menuBackground(), phylactery(nullptr),
-      state(GameState::MAIN_MENU), paused(false), soulCount(0),
-      selectedMenuOption(0), selectedPauseOption(0), selectedQuitOption(0) {
+      spiritPanel(nullptr), state(GameState::MAIN_MENU),
+      paused(false), soulCount(0), selectedMenuOption(0),
+      selectedPauseOption(0), selectedQuitOption(0) {
 
     if (!font.loadFromFile("assets/OpenSans-VariableFont_wdth,wght.ttf")) {
         std::cerr << "Failed to load font" << std::endl;
@@ -35,9 +36,7 @@ Game::Game()
     }
 
     std::vector<std::string> quitConfirmStrings = {
-        "Are you sure you want to quit?",
-        "Yes",
-        "No"
+        "Are you sure you want to quit?", "Yes", "No"
     };
     for (size_t i = 0; i < quitConfirmStrings.size(); ++i) {
         sf::Text text(quitConfirmStrings[i], font, 24);
@@ -46,10 +45,13 @@ Game::Game()
     }
 
     phylactery = new Phylactery("assets/phylactery.png");
+    spiritPanel = new SpiritPanel(font, 10.f, 50.f, 280.f, 500.f);
+    soulClock.restart();
 }
 
 Game::~Game() {
     delete phylactery;
+    delete spiritPanel;
 }
 
 void Game::run() {
@@ -78,20 +80,24 @@ void Game::processEvents() {
                         switch (selectedMenuOption) {
                             case 0:
                                 state = GameState::IN_GAME;
-                                break;
-                            case 1:
-                                break;
-                            case 2:
+                                soulClock.restart();
                                 break;
                             case 3:
                                 state = GameState::QUIT_CONFIRM;
                                 break;
+                            default:
+                                break;
                         }
                     }
                 } else if (state == GameState::IN_GAME) {
-                    if (event.key.code == sf::Keyboard::Escape)
+                    if (event.key.code == sf::Keyboard::Escape) {
                         paused = !paused;
-                    state = paused ? GameState::PAUSED : GameState::IN_GAME;
+                        state = paused ? GameState::PAUSED : GameState::IN_GAME;
+                    } else if (event.key.code == sf::Keyboard::Down) {
+                        spiritPanel->scroll(20);
+                    } else if (event.key.code == sf::Keyboard::Up) {
+                        spiritPanel->scroll(-20);
+                    }
                 } else if (state == GameState::PAUSED) {
                     if (event.key.code == sf::Keyboard::Down)
                         selectedPauseOption = (selectedPauseOption + 1) % pauseTexts.size();
@@ -114,8 +120,10 @@ void Game::processEvents() {
                     else if (event.key.code == sf::Keyboard::Up)
                         selectedQuitOption = (selectedQuitOption - 1 + 2) % 2;
                     else if (event.key.code == sf::Keyboard::Enter) {
-                        if (selectedQuitOption == 0) window.close();
-                        else state = GameState::MAIN_MENU;
+                        if (selectedQuitOption == 0)
+                            window.close();
+                        else
+                            state = GameState::MAIN_MENU;
                     }
                 }
                 break;
@@ -128,6 +136,8 @@ void Game::processEvents() {
                         soulCount++;
                         std::cout << "Soul Count: " << soulCount << std::endl;
                     }
+
+                    spiritPanel->handleClick(clickPosition, soulCount);
                 }
                 break;
 
@@ -138,7 +148,11 @@ void Game::processEvents() {
 }
 
 void Game::update() {
-    // Reserved for logic updates
+    if (state == GameState::IN_GAME) {
+        float deltaTime = soulClock.restart().asSeconds();
+        spiritPanel->update(deltaTime, soulCount);
+        soulCount += spiritPanel->getTotalSPS();
+    }
 }
 
 void Game::render() {
@@ -159,8 +173,10 @@ void Game::render() {
             soulText.setCharacterSize(24);
             soulText.setFillColor(sf::Color::White);
             soulText.setString("Souls: " + std::to_string(soulCount));
-            soulText.setPosition(10.f, 10.f);
+            soulText.setPosition(300.f, 10.f);
             window.draw(soulText);
+
+            spiritPanel->draw(window, soulCount);
         }
 
         if (state == GameState::PAUSED) {
