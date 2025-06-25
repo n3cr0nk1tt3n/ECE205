@@ -20,22 +20,14 @@ Game::Game()
         static_cast<float>(window.getSize().y) / menuBackgroundTexture.getSize().y
     );
 
-    std::vector<std::string> mainMenuStrings = {
-        "Play",
-        "Options",
-        "Credits",
-        "Quit"
-    };
+    std::vector<std::string> mainMenuStrings = {"Play", "Options", "Credits", "Quit"};
     for (size_t i = 0; i < mainMenuStrings.size(); ++i) {
         sf::Text text(mainMenuStrings[i], font, 24);
         text.setPosition(50, 100 + i * 40);
         menuTexts.push_back(text);
     }
 
-    std::vector<std::string> pauseMenuStrings = {
-        "Resume",
-        "Quit to Main Menu"
-    };
+    std::vector<std::string> pauseMenuStrings = {"Resume", "Quit to Main Menu"};
     for (size_t i = 0; i < pauseMenuStrings.size(); ++i) {
         sf::Text text(pauseMenuStrings[i], font, 24);
         text.setPosition(50, 100 + i * 40);
@@ -54,7 +46,6 @@ Game::Game()
     }
 
     phylactery = new Phylactery("assets/phylactery.png");
-    phylactery->setPosition(300, 200);
 }
 
 Game::~Game() {
@@ -89,9 +80,9 @@ void Game::processEvents() {
                                 state = GameState::IN_GAME;
                                 break;
                             case 1:
-                                break; // Options
+                                break;
                             case 2:
-                                break; // Credits
+                                break;
                             case 3:
                                 state = GameState::QUIT_CONFIRM;
                                 break;
@@ -100,7 +91,6 @@ void Game::processEvents() {
                 } else if (state == GameState::IN_GAME) {
                     if (event.key.code == sf::Keyboard::Escape)
                         paused = !paused;
-
                     state = paused ? GameState::PAUSED : GameState::IN_GAME;
                 } else if (state == GameState::PAUSED) {
                     if (event.key.code == sf::Keyboard::Down)
@@ -148,7 +138,7 @@ void Game::processEvents() {
 }
 
 void Game::update() {
-    // Add any update logic here
+    // Reserved for logic updates
 }
 
 void Game::render() {
@@ -160,8 +150,18 @@ void Game::render() {
             menuTexts[i].setFillColor(i == selectedMenuOption ? sf::Color::Yellow : sf::Color::White);
             window.draw(menuTexts[i]);
         }
-    } else if (state == GameState::IN_GAME || state == GameState::PAUSED || state == GameState::QUIT_CONFIRM) {
+    } else {
         window.draw(*phylactery);
+
+        if (state == GameState::IN_GAME) {
+            sf::Text soulText;
+            soulText.setFont(font);
+            soulText.setCharacterSize(24);
+            soulText.setFillColor(sf::Color::White);
+            soulText.setString("Souls: " + std::to_string(soulCount));
+            soulText.setPosition(10.f, 10.f);
+            window.draw(soulText);
+        }
 
         if (state == GameState::PAUSED) {
             for (size_t i = 0; i < pauseTexts.size(); ++i) {
