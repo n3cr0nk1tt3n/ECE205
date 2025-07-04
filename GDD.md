@@ -1,62 +1,141 @@
 # Game Design Document (GDD)
-**Title:** The Curse of Kursore  
+
+**Title:** *The Curse of Kursore*  
 **Studio:** Spell Lynx Games  
 **Design Lead:** Derek Miner  
-**Document Version:** v1.1 (June 2025)
+**Document Version:** v1.2 (July 2025)
 
 ---
 
-## 1. Overview
-**Genre:** Clicker / Idle Game with Light RPG Elements  
-**Platform:** PC (standalone, with browser-based potential)  
-**Visual Style:** 2D pixel art, dark fantasy necromancer aesthetic  
+## 1. Game Overview
 
-The player controls a cursed phylactery that grows in power by harvesting souls, unlocking spectral units, and spreading corruption across the UI/world.
+**Genre:** Clicker / Idle Game with Light RPG Mechanics  
+**Platform:** PC (Standalone EXE; browser-based potential in future ports)  
+**Engine/Framework:** SFML with C++  
+**Visual Style:** 2D pixel art, dark necromantic fantasy aesthetic
 
----
-
-## 2. Current Features (Implemented)
-- Click-to-harvest mechanic using a phylactery
-- Real-time soul counter displayed in-game
-- Spirit Summoning Panel (unlocked by souls, scrollable if >4 units)
-  - Dynamic unit boxes with name, description, cost, sprite, and Summon button
-  - Units contribute passive souls per second
-  - Cost increases per purchase
-  - Only the next summonable unit appears; others unlock progressively
-- Spirit units go red when unaffordable and return to normal when buyable
-- Game loop structure with basic render, update, and input
+**Premise:**  
+The player inhabits a cursed phylactery, once a vessel of forbidden power, now reborn to harvest souls and corrupt the remnants of the world. Through relentless clicking and spectral automation, the phylactery grows its influence, summoning spirits, spreading UI-based corruption, and unlocking the secrets of a forgotten prophecy.
 
 ---
 
-## 3. Planned & Discussed Features
-- Persistent Prestige/Ritual system (reset with permanent upgrades)
-- Additional resource types (Bone Fragments, Woe, Dark Sigils, Blight)
-- Structure upgrades (Soul Well, Bone Mill, Wailing Tree, etc.)
-- Multiple progression zones ("Progression Areas")
-- Visual corruption to UI as player advances
-- Lore fragments and Prophecy/Event Chains
-- Save/load system
-- Audio design: whispering ambience, brittle bone clicks
-- Modular phylactery skins
+## 2. Core Gameplay Features (Implemented)
+
+- **Primary Interaction:**
+  - Clickable phylactery generates **Souls** (primary resource).
+  - Clicking gives immediate feedback and resource increment.
+
+- **Soul Display:**
+  - Real-time soul counter shown on HUD.
+
+- **Spirit Summoning Panel:**
+  - Unlocks after collecting initial soul threshold.
+  - Scrollable if more than four units unlocked.
+  - Each unit includes:
+    - Name
+    - Description
+    - Soul Cost
+    - Custom sprite
+    - “Summon” button
+
+- **Automation:**
+  - Summoned spirits passively generate souls per second.
+  - Unit costs scale up with each purchase.
+
+- **Progressive Unlocks:**
+  - Only the next unlockable spirit is visible until affordable.
+  - Spirit boxes turn red when unaffordable and normalize when buyable.
+
+- **Game Loop:**
+  - Core SFML loop includes rendering, input handling, and update tick.
+
+---
+
+## 3. Planned & In-Progress Features
+
+- **Prestige System:**
+  - *Ritual Reset* mechanic for permanent upgrade progression.
+  - Unlocks additional modifiers or meta-currencies on reset.
+
+- **Secondary Resources:**
+  - Will be introduced as progression milestones:
+    - *Bone Fragments*
+    - *Woe*
+    - *Dark Sigils*
+    - *Blight*
+
+- **Structures & Upgrades:**
+  - Constructible/clickable UI buildings:
+    - Soul Well
+    - Bone Mill
+    - Wailing Tree
+  - Each adds passive effects or resource bonuses.
+
+- **Progression Zones:**
+  - Themed stages or “zones” representing different realms of corruption.
+  - Each introduces new spirits, mechanics, and event types.
+
+- **UI Evolution:**
+  - The interface grows in **complexity** over time, unlocking new management panels and tools.
+  - Early game presents minimal UI (training wheels); mid-to-late game introduces:
+    - Resource and upgrade bars
+    - Ritual/event side panels
+    - Expanded spirit and structure management
+  - Reflects player mastery without overwhelming at the start.
+
+- **Lore & Narrative:**
+  - Unlockable *Prophecies* and *Lore Fragments* through progression.
+  - Optional event chains with narrative decisions.
+
+- **Audio Design:**
+  - Minimalist and atmospheric:
+    - Whispering ambience
+    - Bone click SFX
+    - Event stingers
+
+- **Cosmetic Phylactery Skins:**
+  - Unlock new clickable phylactery visuals through progression or achievements.
+
+- **Save/Load System:**
+  - Local save files with auto-save interval.
+  - Will serialize souls, spirits, structures, and player state.
 
 ---
 
 ## 4. UI Design
-- Center: Clickable phylactery
-- Left: Spirit Panel (scrollable list of spirit units)
-- Future: Right for event/status panels, bottom for resource/action bars
+
+- **Center (Main Click Zone):**
+  - Large animated phylactery (clickable object)
+
+- **Left Panel:**
+  - Spirit Summoning Panel (scrollable)
+
+- **Right Panel (Planned):**
+  - Events, narrative fragments, ritual indicators
+
+- **Bottom Bar (Planned):**
+  - Multi-resource tracker
+  - Structure/Ritual activation buttons
+
+- **Visual Language:**
+  - Retro pixel font (`pixel_font.ttf`)
+  - Clean layout, dark color palette with necromantic highlights
 
 ---
 
-## 5. Next Steps
-- Finalize SpiritPanel logic (unit positioning, upgrades, scroll behavior)
-- Fix font loading issue
-- Begin work on Ritual reset/prestige system
-- Save/load system integration
+## 5. Development Roadmap (Next Steps)
+
+- [ ] Finalize *Spirit Panel* logic (layout, scroll behavior, upgrades)
+- [ ] Resolve **font loading** issue for `pixel_font.ttf`
+- [ ] Begin implementation of **Ritual Reset / Prestige** system
+- [ ] Design & hook up **Save/Load** functionality (binary or JSON)
+- [ ] Add placeholder **SFX hooks** (soul collection, summon feedback)
 
 ---
 
-## 6. Dev Notes
-- Font currently fails to load from assets (`pixel_font.ttf`)
-- Passive soul income accumulates correctly after fix
-- Game builds successfully on make
+## 6. Developer Notes
+
+- Font file not currently loading; verify path and file presence.
+- Passive soul income functions correctly after last patch.
+- Game builds and runs via `make` using SFML 2.x.
+- Codebase modularized: render, logic, and input handled in separate files.
