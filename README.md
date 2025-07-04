@@ -52,7 +52,7 @@ This branch serves as a **dedicated development and testing zone** for experimen
 ## 🧠 Developer Notes
 
 > “Break it here so you don’t break it later.”  
-This branch is designed for safe creative chaos—don’t be afraid to test, break, and iterate.
+This branch is designed for safe creative chaos.
 
 ---
 
